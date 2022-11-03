@@ -1,9 +1,14 @@
-from mrjob import MRJob
+from mrjob.job import MRJob
 from mrjob.step import MRStep
 
-class MRWordCount(MRJob)
+class MRWordCount(MRJob):
+
     def mapper(self, _, line):
-        yield line,1
+        words = line.split()
+        for word in words:
+            yield word.lower(),1
+    def reducer(self, key, values):
+        yield key, sum(values)
 
 if __name__ == '__main__':
     MRWordCount.run()
