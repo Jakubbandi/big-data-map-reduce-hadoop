@@ -28,7 +28,6 @@ class MRFlight(MRJob):
 
         departure_delay = float(departure_delay)
         arrival_delay = float(arrival_delay)
-        # month = int(month)
         yield airline, (departure_delay, arrival_delay)
 
     def reducer_init(self):
@@ -37,6 +36,7 @@ class MRFlight(MRJob):
         with open('airlines.csv','r') as file:
             for line in file:
                 code, full_name = line.split(',')
+                full_name = full_name[:-1]
                 self.airline_names[code] = full_name
 
     def reducer(self, key, values):
@@ -47,7 +47,7 @@ class MRFlight(MRJob):
             total_dep_delay += value[0]
             total_arrival_delay += value[1]
             num_elements += 1
-        yield key, (total_dep_delay / num_elements, total_arrival_delay / num_elements)
+        yield self.airline_names[key], (total_dep_delay / num_elements, total_arrival_delay / num_elements)
 
 if __name__ == '__main__':
     MRFlight.run()
