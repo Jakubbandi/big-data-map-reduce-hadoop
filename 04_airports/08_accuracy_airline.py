@@ -16,8 +16,8 @@ class MRAccuracyAirline(MRJob):
         if arrival_delay == '':
             arrival_delay = 0
 
-        departure_delay = abs(departure_delay)
-        arrival_delay = abs(arrival_delay)
+        departure_delay = abs(int(departure_delay))
+        arrival_delay = abs(int(arrival_delay))
 
         yield airline, (departure_delay,arrival_delay)
 
