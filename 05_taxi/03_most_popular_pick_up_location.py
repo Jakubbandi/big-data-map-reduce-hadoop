@@ -12,6 +12,11 @@ class MRTaxi(MRJob):
         (VendorID, tpep_pickup_datetime, tpep_dropoff_datetime, passenger_count, trip_distance, pickup_longitude,
          pickup_latitude, RetacodeID, store_and_fwd_flag, dropoff_longitude, dropoff_latitude, payment_type,
          fare_amount, extra, mta_tax, tip_amount, tolls_amount, improvement_surcharge, total_amount) = line.split(',')
-        yield (pickup_latitude, pickup_longitude), 1
 
-if __name__ == '__main__'
+        pickup_latitude = pickup_latitude[:8]
+        pickup_longitude = pickup_longitude[:9]
+
+        yield (float(pickup_latitude), float(pickup_longitude)), 1
+
+if __name__ == '__main__':
+    MRTaxi.run()
