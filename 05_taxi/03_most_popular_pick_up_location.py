@@ -5,7 +5,10 @@ class MRTaxi(MRJob):
 
     def steps(self):
         return[
-            MRStep(mapper=self.mapper)
+            MRStep(mapper=self.mapper,
+                   reducer=self.reducer),
+            MRStep(mapper=self.mapper_get_keys,
+                   reducer=self.reducer_get_sorted)
         ]
 
     def mapper(self, _, line):
@@ -17,6 +20,18 @@ class MRTaxi(MRJob):
         pickup_longitude = pickup_longitude[:9]
 
         yield (float(pickup_latitude), float(pickup_longitude)), 1
+
+    def reducer(self, key, values):
+        yield key, sum(values)
+
+    def mapper_get_keys(self, key, value):
+        yield None, (value,key)
+
+    def reducer_get_sorted(self, key, values):
+        self.results = []
+        for value in values:
+            self.results.append((key,value))
+            yield None, sorted(self.results, reverse=True)[:10]
 
 if __name__ == '__main__':
     MRTaxi.run()
